@@ -1,4 +1,4 @@
-import{Form} from './forms/Form'
+import {Form} from './forms/Form'
 export function renderApp():void{
   const root = document.getElementById('app');
   if (!root) {
