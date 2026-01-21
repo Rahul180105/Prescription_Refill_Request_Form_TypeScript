@@ -1,0 +1,332 @@
+*{
+    box-sizing: border-box;
+}
+ body{
+     padding: 32px 18px;
+     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+     background: linear-gradient(180deg, #e6f7ff 0%, #cdeeff 45%, #9fd9ff 75%, #79c7ff 100%);
+     color: black;
+     display: flex;
+     column-gap: 10px;
+ }
+
+form{
+    max-width: 980px;
+    margin:0 auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    border:1px solid rgba(15,23,42,0.06);
+    box-shadow: 0 10px 30px rgba(15,23,42,0.08);
+    display:flex;
+    flex-direction: column;
+    
+}
+#formContainer{
+    width: 50%;
+    height: 100%;
+}
+.input-control{
+    font-size: 0.95rem;
+    margin:8px 0 6px;
+    color:#0f172a
+}
+input[type="text"],
+input[type="date"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+textarea{
+    width:100%;
+    padding:10px 12px;
+    border-radius: 8px;
+    border:1px solid #e6e9ef;
+    font-size: 0.95rem;
+    background: #ffffff;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+textarea{
+    min-height:90px;
+    resize: vertical;
+}
+input[readonly]{
+    background: #f8fafc;
+    color:#6b7280;
+}
+input[type="radio"],
+input[type="checkbox"]{
+    width:auto;
+    margin-right:6px;
+}
+.options{
+    display: flex;
+    flex-wrap: wrap;
+    gap:12px;
+    align-items: center;
+}
+.medication{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.med-row{
+    display: flex;
+    align-items: center;
+    gap:12px;
+    margin-bottom:10px;
+}
+.med-row span{
+    flex:1;
+    text-align: left;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    gap: 10px;
+}
+.med-row input.med-qty{
+    width: 90px;
+    padding: 8px;
+    border-radius: 8px;
+    border:1px solid #ccc;
+    text-align: center;
+}
+.input-control.has-error .error{
+    visibility: visible;
+}
+.input-control.has-error input,
+.input-control.has-error textarea{
+    border-color: #f43f5e;
+    box-shadow: 0 0 0 4px rgba(244,63,94,0.06);
+}
+.patient-contact{
+    display: flex;
+    flex-wrap:wrap;
+    gap: 20px;
+}
+.patient-contact .input-control{
+    flex: 1 1 40%
+}
+.section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+
+.error{
+    color: red;
+}
+
+/* Buttons */
+.top-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-bottom:10px;
+}
+.btn{
+    appearance: none;
+    border: 0;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    background: #0f172a;
+    color: white;
+    box-shadow: 0 6px 18px rgba(15,23,42,0.08);
+    transition: transform .08s ease, box-shadow .12s ease, opacity .12s ease;
+}
+.btn:active{ transform: translateY(1px); }
+.btn.secondary{
+    background: transparent;
+    color: #0f172a;
+    border:1px solid rgba(15,23,42,0.08);
+}
+
+/* Form submit */
+button[type="submit"]{
+    padding: 10px 18px;
+    border-radius: 10px;
+    background: linear-gradient(180deg,#0077ff,#005fd4);
+    color: white;
+    border:0;
+    font-weight:600;
+}
+
+/* Table styles */
+
+#tableContent{
+    max-width: 980px;
+    margin: 10px auto;
+    margin-left: 0px;
+    margin-right: 10px;
+    background-color: white;
+}
+
+
+@media (max-width: 720px){
+    body{ padding:18px 12px; }
+    .section{ grid-template-columns: 1fr; }
+    .patient-contact .input-control{ flex:1 1 100%; }
+    .data-table{ min-width:600px; }
+    .page-layout{
+        flex-direction: column;
+        padding: 16px;
+        gap:16px;
+        align-items: stretch;
+    
+    }
+   
+    .table-panel{
+        width: 100%;
+        height: auto;
+        
+    }
+    .form{
+        flex:1;
+        min-width:0;
+    }
+    
+
+    .form,.table-panel{
+        width:100%;
+        min-width: 100%;
+
+    }
+     #tableContent{
+        margin: 0px;
+        padding: 0px;
+    }
+    #tableContent .table-panel{
+        flex:1;
+        height: auto;
+        width: 100%;
+        
+    }
+}
+
+@media (max-width: 420px){
+    .btn{ padding:8px 10px; }
+    button[type="submit"]{ width:100%; }
+}
+
+.page-layout{
+    display:flex;
+    min-height:100vh;
+    background: linear-gradient(180deg, #e6f7ff 0%, #cdeeff 45%, #9fd9ff 75%, #79c7ff 100%);
+}
+.form-panel{
+    flex:1;
+    padding: 24px;
+    width: 50%;
+    
+}
+.divider{
+    width:20px;
+}
+.table-panel{
+    
+    padding: 16px;
+    overflow-x: auto;
+    height: 100%;
+    background:white;
+}
+#tableContent{
+    border-collapse: collapse;
+    border: 12px;
+    overflow-x:auto ;
+    table-layout: auto;
+    height: 10px;
+
+}
+
+
+table.data-table{
+    margin-top: 10px;
+}
+div.section.approval-reason{
+    .input-control{
+    display: flex;
+    flex-direction: column;
+}}
+div.section.delivery-section{
+    .input-control{
+    display: flex;
+    flex-direction: column;
+    }
+}
+
+
+.data-table th,
+.data-table td{
+    padding: 12px 14px;
+    text-align: left;
+    vertical-align:top;
+    border-bottom: 1px solid white;
+    font-size: small;
+}
+
+.patient-cell strong{
+    display: block;
+    font-size: 13px;
+    color:#666;
+}
+.patient-cell span{
+    display: block;
+    font-weight: 500;
+}
+#tableContent{
+    border-radius: 20px;
+    width: 100%;
+    height: auto;
+    display:block;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popup-box {
+  background: #ffffff;
+  padding: 24px 28px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 360px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.popup-box h2 {
+  margin-bottom: 8px;
+  color: #2e7d32;
+}
+
+.popup-box p {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.popup-box button {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.popup-box button:hover {
+  background: #125aa0;
+}

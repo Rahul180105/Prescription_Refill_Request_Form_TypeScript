@@ -1,7 +1,8 @@
-import { createInput } from "../form-elements";
+import { createInput } from "../elements/input-box";
 import { state } from "../../../app.state";
 import { wireInput } from "../../../utils/dom";
 import { findPatientById } from "../../../app.logic";
+import { errorRender } from "../../../utils/error-helpers/error-render";
 
 export function PatientSection():HTMLDivElement{
     const patientSection = document.createElement('div');
@@ -9,6 +10,7 @@ export function PatientSection():HTMLDivElement{
     /*wire input for id */
     const patientIdControl=createInput('Patient ID', 'text');
     const patientIdInput=patientIdControl.querySelector('input');
+    
     if (patientIdInput) {
     wireInput(
       patientIdInput,
@@ -40,7 +42,8 @@ export function PatientSection():HTMLDivElement{
 
   
 
-    patientSection.appendChild(patientIdControl)
+  patientSection.appendChild(patientIdControl);
+  errorRender(patientIdControl,state.errors.patientId);
     
   const nameControl = createInput('Patient Name', 'text');
   const nameInput = nameControl.querySelector('input');
@@ -64,7 +67,8 @@ export function PatientSection():HTMLDivElement{
     if(phoneInput){
       wireInput(phoneInput,()=>state.form.phone,(value)=>{state.form.phone=value});
     }
-    patientSection.append(phoneControl)
+    patientSection.append(phoneControl);
+    errorRender(phoneControl,state.errors.phone);
   
     /*wire input for email */
     const emailControl=createInput('Email', 'email');
@@ -72,6 +76,7 @@ export function PatientSection():HTMLDivElement{
     if(emailInput){
       wireInput(emailInput,()=>state.form.email,(value)=>{state.form.email=value});
     }
-    patientSection.append(emailControl)
+    patientSection.append(emailControl);
+    errorRender(emailControl,state.errors.email);
     return patientSection
 }

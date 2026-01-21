@@ -1,11 +1,13 @@
-import type { RefillFormState,RefillRecord} from './types';
+import type { RefillFormState,RefillRecord,FormErrors} from './types';
 
 export interface AppState{
   form:RefillFormState;
   records:RefillRecord[];
-  editId:string|null;
+  editId:number|null;
+  errors:FormErrors;
+  
 };
-const initialFormState:RefillFormState={
+export const initialFormState:RefillFormState={
   patientId:'',
   patientName:'',
   dateOfBirth:'',
@@ -24,8 +26,10 @@ const initialFormState:RefillFormState={
   needsConsulatation:false,
   confirmIdentity:false,
 };
+
 export const state:AppState={
   form:initialFormState,
   records:[],
-  editId:null
+  editId:null,
+  errors:{} as FormErrors
 };

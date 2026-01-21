@@ -1,12 +1,14 @@
-import {Form} from './forms/Form'
+import { Form } from './forms/Form'
+import { Table } from './Table';
 export function renderApp():void{
-  const root = document.getElementById('app');
-  if (!root) {
-    throw Error('Root element absent')
+  const formContainer=document.getElementById('formContainer')
+  const tableConatiner=document.getElementById('tableContent')
+  if (!formContainer || !tableConatiner) {
+    throw Error('reqd elements absent')
   }
-  root.innerHTML = '';
-  const layout : HTMLDivElement = document.createElement('div');
-  layout.className = 'app';
-  layout.appendChild(Form());
-  root.appendChild(layout);
+  formContainer.innerHTML = '';
+  tableConatiner.innerHTML = '';
+
+  formContainer.appendChild(Form());
+  tableConatiner.appendChild(Table());
 }

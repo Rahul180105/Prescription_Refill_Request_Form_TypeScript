@@ -1,6 +1,9 @@
 import { state } from "../../../app.state";
-import { createRadioGroup,createInput } from "../form-elements";
+import { createRadioGroup } from "../elements/radio-grp";
+import { createInput } from "../elements/input-box";
 import { wireRadioGroup,wireInput } from "../../../utils/dom";
+import { errorRender } from "../../../utils/error-helpers/error-render";
+
 
 export function ReasonSection():HTMLDivElement{
   const reasonSection = document.createElement('div');
@@ -13,16 +16,34 @@ export function ReasonSection():HTMLDivElement{
     'OTHER'
   ]);
   const reasonRadios=reasonControl.querySelectorAll<HTMLInputElement>('input[type="radio"]')
-  wireRadioGroup(reasonRadios,()=>state.form.reason,(value)=>{state.form.reason=value});
+  wireRadioGroup(reasonRadios,()=>state.form.reason,(value)=>{
+    state.form.reason=value;
+    if(value!=="OTHER"){
+      state.form.otherReason="";
+    }
+  });
   reasonSection.appendChild(reasonControl);
+  errorRender(reasonControl,state.errors.reason);
+
 
   /* wire reason */
   const otherReasonControl = createInput('Other Reason', 'text');
   const otherReasonInput = otherReasonControl.querySelector('input');
   if (otherReasonInput) {
-    wireInput(otherReasonInput,() => state.form.otherReason,(value) => {state.form.otherReason = value;});
+    wireInput(otherReasonInput,() => state.form.otherReason,(value) => {
+      state.form.otherReason = value;
+  
+      });
   }
   reasonSection.append(otherReasonControl)
+  errorRender(otherReasonControl,state.errors.otherReason);
+  /*used to hide the other reason box */
+   if(state.form.reason==='OTHER'){
+    otherReasonControl.style.display='block';
+  }else{
+    otherReasonControl.style.display='none';
+  }
+
   const approvalControl = createInput('Last Approval Date', 'date');
   const approvalInput = approvalControl.querySelector('input');
 
@@ -32,6 +53,6 @@ export function ReasonSection():HTMLDivElement{
   }
 
   reasonSection.appendChild(approvalControl);
-
+  
   return reasonSection;
 }

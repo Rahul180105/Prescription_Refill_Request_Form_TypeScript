@@ -8,7 +8,7 @@ export function MedicationSection(): HTMLDivElement {
   const table = document.createElement('table');
   table.className = 'medication-table';
 
-  /* ---------- Header (ALWAYS RENDERED) ---------- */
+  /* ---------- Head---------- */
   const thead = document.createElement('thead');
   const headerRow = document.createElement('tr');
 
@@ -21,7 +21,7 @@ export function MedicationSection(): HTMLDivElement {
   thead.appendChild(headerRow);
   table.appendChild(thead);
 
-  /* ---------- Body (ONLY IF DATA EXISTS) ---------- */
+  /* ----------Body---------- */
   const tbody = document.createElement('tbody');
 
   state.form.medications.forEach((medication) => {
@@ -53,7 +53,8 @@ export function MedicationSection(): HTMLDivElement {
     row.append(nameCell, dosageCell, quantityCell);
     tbody.appendChild(row);
   });
-
+  const errorDiv=document.createElement('div');
+  errorDiv.className='error';
   table.appendChild(tbody);
   section.appendChild(table);
 

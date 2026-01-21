@@ -18,6 +18,7 @@ export interface FormMedication{
   quantity:number | null;
 }
 
+
 export interface RefillFormState{
   patientId:string;
   patientName:string;
@@ -26,11 +27,11 @@ export interface RefillFormState{
   phone:string;
   email:string;
   medications:FormMedication[];
-  reason:'RUNNING_OUT' | 'LOST' | 'TAVELLING' |'OTHER' | null;
+  reason:string|null//;
   otherReason:string;
   deliveryAddress:string;
   preferredDeliveryDate:string;
-  deliveryMethod:'SAME DAY' | 'STANDARD' | null;
+  deliveryMethod:string| null;
   specialInstrucions: string;
   hasInsurance:boolean;
   insuranceNumber:string;
@@ -38,11 +39,12 @@ export interface RefillFormState{
   confirmIdentity:boolean;
 }
 export interface FormErrors{
+  patientId?:string;
   phone?:string;
   email?:string;
   reason?:string;
   otherReason?:string;
-  address?:string;
+  deliveryaddress?:string;
   deliveryMethod?:string;
   insuranceNumber?:string;
   confirmation?:string;
@@ -64,5 +66,5 @@ export interface RefillRecord{
   specialInstrucions: string;
   hasInsurance:boolean;
   needsConsulatation:boolean;
-  confirmIdentity:boolean;
+  insuranceNumber:string;
 }
