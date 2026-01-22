@@ -8,17 +8,17 @@ export function wireInput(
     input.value=getValue();
     input.addEventListener('input',(e):void=>{setValue((e.target  as HTMLInputElement).value);
     });
-    input.addEventListener('blur',()=>{renderApp();});
 }
-export function wireRadioGroup<T extends string | null>(
+
+export function wireRadioGroup<r extends string | null>(
   radios: NodeListOf<HTMLInputElement>,
-  getValue: () => T,
-  setValue: (value: T) => void
+  getValue: () => r,
+  setValue: (value: r) => void
 ): void {
   radios.forEach((radio) => {
     radio.checked = radio.value === getValue();
     radio.addEventListener('change', () => {
-      setValue(radio.value as T);
+      setValue(radio.value as r);
       renderApp();
     });
   });

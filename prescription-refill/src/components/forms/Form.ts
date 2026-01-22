@@ -1,5 +1,5 @@
 import { state } from '../../app.state';
-import { PatientSection } from './sections/patient';
+import { PatientSection } from './sections/partient/patient';
 import { DeliverySection } from './sections/delivery';
 import { ConfirmSection } from './sections/confirm';
 import { ReasonSection } from './sections/reason';
@@ -11,7 +11,9 @@ import { setErrors } from '../../utils/error-helpers/set-error';
 import { hasErrors } from '../../utils/error-helpers/has-error';
 import { validateForm } from './validations/validate';
 import { BuildPayload } from './build-payload';
-import { resetFormState } from '../../utils/reset-formstate';
+import { resetFormState } from '../../utils/resetFormState';
+import { clearErrors } from '../../utils/error-helpers/clear-error';
+
   
 
 export function Form(): HTMLFormElement {
@@ -58,8 +60,10 @@ export function Form(): HTMLFormElement {
     
     console.log('SUBMIT PAYLOAD:',state.records);
     resetFormState();
+    clearErrors();
     renderApp();
   });
 
   return form;
+  
 }

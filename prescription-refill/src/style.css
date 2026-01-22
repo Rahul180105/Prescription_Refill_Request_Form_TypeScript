@@ -176,34 +176,19 @@ button[type="submit"]{
         padding: 16px;
         gap:16px;
         align-items: stretch;
-    
     }
-   
     .table-panel{
         width: 100%;
         height: auto;
-        
     }
     .form{
         flex:1;
         min-width:0;
     }
-    
 
-    .form,.table-panel{
-        width:100%;
-        min-width: 100%;
-
-    }
      #tableContent{
         margin: 0px;
         padding: 0px;
-    }
-    #tableContent .table-panel{
-        flex:1;
-        height: auto;
-        width: 100%;
-        
     }
 }
 

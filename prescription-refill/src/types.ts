@@ -27,7 +27,7 @@ export interface RefillFormState{
   phone:string;
   email:string;
   medications:FormMedication[];
-  reason:string|null//;
+  reason:string|null;
   otherReason:string;
   deliveryAddress:string;
   preferredDeliveryDate:string;
@@ -48,7 +48,7 @@ export interface FormErrors{
   deliveryMethod?:string;
   insuranceNumber?:string;
   confirmation?:string;
-  medications?:Record<number,string>;
+  medications?:string;
 }
 export interface RefillRecord{
   patientId:string;
