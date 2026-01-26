@@ -1,5 +1,5 @@
-import { findPatientById } from "../../../app.logic";
-import { state } from "../../../app.state";
+import { findPatientById } from "../../../utils/helpers/find-patientid";
+import { state } from "../../../states/app-state";
 
 export function readOnlyIntigrity():boolean{
   const patient=findPatientById(state.form.patientId);

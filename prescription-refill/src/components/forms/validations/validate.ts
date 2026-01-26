@@ -1,19 +1,15 @@
-import type { FormErrors,RefillFormState } from "../../../types";
-import { findPatientById } from "../../../app.logic";
+import type { RefillFormState } from "../../../types/refill-formstate";
+import type { FormErrors } from "../../../types/form-errors";
+import { findPatientById } from "../../../utils/helpers/find-patientid";
 
 export function validateForm(form: RefillFormState): FormErrors {
   const errors: FormErrors = {};
-
-  /* ---------------- Patient ---------------- */
 
   if (!form.patientId.trim()) {
     errors.patientId = "Patient ID is required";
   } else if (!findPatientById(form.patientId)) {
     errors.patientId = "Invalid Patient ID";
   }
-
-  /* ---------------- Contact ---------------- */
-
   if (!/^\d{10}$/.test(form.phone)) {
     errors.phone = "Phone number must be exactly 10 digits";
   }
@@ -22,7 +18,6 @@ export function validateForm(form: RefillFormState): FormErrors {
     errors.email = "Enter a valid email address";
   }
 
-  /* ---------------- Medications ---------------- */
 
   const hasValidMedication = form.medications.some(
     (m) => typeof m.quantity === "number" && m.quantity >= 1 && m.quantity <= 12
@@ -32,8 +27,6 @@ export function validateForm(form: RefillFormState): FormErrors {
     errors.medications = "Select at least one medication quantity (1–12)";
   }
 
-  /* ---------------- Reason ---------------- */
-
   if (!form.reason) {
     errors.reason = "Please select a reason for refill";
   }
@@ -41,8 +34,6 @@ export function validateForm(form: RefillFormState): FormErrors {
   if (form.reason === "OTHER" && !form.otherReason.trim()) {
     errors.otherReason = "Please specify the other reason";
   }
-
-  /* ---------------- Delivery ---------------- */
 
   if (!form.deliveryAddress.trim()) {
     errors.deliveryaddress = "Delivery address is required";
@@ -52,13 +43,11 @@ export function validateForm(form: RefillFormState): FormErrors {
     errors.deliveryMethod = "Please select a delivery method";
   }
 
-  /* ---------------- Insurance ---------------- */
 
   if (form.hasInsurance && !form.insuranceNumber.trim()) {
     errors.insuranceNumber = "Insurance number is required";
   }
 
-  /* ---------------- Confirmation ---------------- */
 
   if (!form.confirmIdentity) {
     errors.confirmation = "You must confirm identity to proceed";

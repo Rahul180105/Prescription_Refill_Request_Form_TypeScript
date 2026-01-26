@@ -1,5 +1,5 @@
 import { Form } from './forms/Form'
-import { Table } from './Table';
+import { Table } from './tables/Table';
 export function renderApp():void{
   const formContainer=document.getElementById('formContainer')
   const tableConatiner=document.getElementById('tableContent')

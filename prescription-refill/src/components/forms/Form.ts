@@ -1,21 +1,20 @@
-import { state } from '../../app.state';
-import { PatientSection } from './sections/partient/patient';
+import { state } from '../../states/app-state';
+import { PatientSection } from './sections/patient';
 import { DeliverySection } from './sections/delivery';
 import { ConfirmSection } from './sections/confirm';
 import { ReasonSection } from './sections/reason';
-import { MedicationSection } from './sections/medication';
-import { saveRecords } from '../../app.storage';
-import type { RefillRecord } from '../../types';
+import { MedicationSection } from './sections/medications';
+import { saveRecords } from '../../storage/save';
+import type { RefillRecord } from '../../types/refill-record';
 import { renderApp } from '../App';
-import { setErrors } from '../../utils/error-helpers/set-error';
-import { hasErrors } from '../../utils/error-helpers/has-error';
+import { setErrors } from '../../utils/helpers/error-helpers/set-error';
+import { hasErrors } from '../../utils/helpers/error-helpers/has-error';
 import { validateForm } from './validations/validate';
-import { BuildPayload } from './build-payload';
-import { resetFormState } from '../../utils/resetFormState';
-import { clearErrors } from '../../utils/error-helpers/clear-error';
+import { BuildPayload } from '../../utils/helpers/build-payload';
+import { resetFormState } from '../../utils/helpers/resetFormState';
+import { clearErrors } from '../../utils/helpers/error-helpers/clear-error';
 
   
-
 export function Form(): HTMLFormElement {
   const form: HTMLFormElement = document.createElement('form');
   form.id = 'refill-form';

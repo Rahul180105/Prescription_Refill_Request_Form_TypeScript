@@ -1,8 +1,13 @@
+import { loadRecords } from './storage/load';
 import { renderApp } from "./components/App";
-import { loadRecords } from "./app.storage";
 import './style.css';
+import { initThemeToggle } from './theme/theme-toggle';
 
 document.addEventListener('DOMContentLoaded', ():void => {
   loadRecords();
+  initThemeToggle();
   renderApp();
 })
+
+
+
