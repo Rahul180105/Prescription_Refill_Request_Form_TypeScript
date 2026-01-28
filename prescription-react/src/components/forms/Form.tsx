@@ -10,6 +10,8 @@ import type { RefillFormState } from "../../types/refill-formstate";
 import { initialFormState } from "../../states/initial-formstate";
 import type { RefillRecord } from "../../types/refill-record";
 import { saveRecords } from "../../storage";
+import type { FormErrors } from "../../types";
+
 
 
 interface FormProps {

@@ -9,4 +9,5 @@ export interface FormErrors{
   insuranceNumber?:string;
   confirmation?:string;
   medications?:string;
+  medicationsRows?:Record<number,string>;
 }

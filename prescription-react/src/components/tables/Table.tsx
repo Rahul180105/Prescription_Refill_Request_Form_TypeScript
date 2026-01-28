@@ -81,15 +81,15 @@ export function Table({
 
                   <td>
                     {record.hasInsurance
-                      ? `Yes (${record.insuranceNumber})`
-                      : "No"}
+                      ? `(${record.insuranceNumber})`
+                      : 'No'}
                   </td>
 
                   <td>
-                    <button onClick={() => setEditingIndex(index)}>
+                    <button className='edit-btn' onClick={() => setEditingIndex(index)}>
                       Edit
                     </button>
-                    <button onClick={() => handleDelete(index)}>
+                    <button className='delete-btn' onClick={() => handleDelete(index)}>
                       Delete
                     </button>
                   </td>
