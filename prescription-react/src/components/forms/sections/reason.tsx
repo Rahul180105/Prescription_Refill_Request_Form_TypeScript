@@ -1,30 +1,57 @@
-import React, { type ReactElement } from 'react'
+import React, { type ReactElement } from "react";
+import type { RefillFormState } from "../../../types/refill-formstate";
 
-export function Reason ():ReactElement{
+type ReasonProps = {
+  form: RefillFormState;
+  setForm: React.Dispatch<React.SetStateAction<RefillFormState>>;
+};
+
+export function Reason({ form, setForm }: ReasonProps): ReactElement {
   return (
     <div className="section approval-reason">
-                 
-                        <label>Reason for Refill*</label>
-                        <div className="input-control">
-                            <label><input type="radio" name="reason" value="RUNNING OUT" />Running Out</label>
-                            <label><input type="radio" name="reason" value="LOST" />Lost</label>
-                            <label><input type="radio" name="reason" value="TRAVELLING" />Travelling</label>
-                            <label><input type="radio" name="reason" value="OTHER" />Other</label>
-                     
-                            <div className="others-box">
-                                <label>Please Specify</label>
-                                <input type="text" id="others-content" />
-                                <div className="error"></div>
-                            </div>
-                            <div className="error"></div>
-                        </div>
+      <label>Reason for Refill *</label>
 
-                        <div className="input-control">
-                            <label>Doctor's Last Approval Date</label>
-                            <input type="date" id="approval" />
-                        </div>
-                </div>
-  )
+      <div className="input-control">
+        {["RUNNING OUT", "LOST", "TRAVELLING", "OTHER"].map((r) => (
+          <label key={r}>
+            <input
+              type="radio"
+              name="reason"
+              value={r}
+              checked={form.reason === r}
+              onChange={() =>
+                setForm({
+                  ...form,
+                  reason: r,
+                  otherReason: r === "OTHER" ? form.otherReason : "",
+                })
+              }
+            />
+            {r}
+          </label>
+        ))}
+
+        {form.reason === "OTHER" && (
+          <div className="others-box">
+            <label>Please Specify</label>
+            <input
+              type="text"
+              value={form.otherReason}
+              onChange={(e) =>
+                setForm({ ...form, otherReason: e.target.value })
+              }
+            />
+            <div className="error"></div>
+          </div>
+        )}
+      </div>
+
+      <div className="input-control">
+        <label>Doctor's Last Approval Date</label>
+        <input type="date" value={form.lastApprovalDate} readOnly />
+      </div>
+    </div>
+  );
 }
 
-export default Reason
+export default Reason;

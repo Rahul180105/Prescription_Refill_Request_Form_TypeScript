@@ -1,34 +1,67 @@
 import React, { type ReactElement } from "react";
+import type { RefillFormState } from "../../../types/refill-formstate";
 
-export function Delivery():ReactElement{
-    return(
-        <div className="section delivery-section">
-                    
-                <div className="input-control">
-                    <label>Delivery Address *</label>
-                    <textarea id="address"></textarea>
-                    <div className="error"></div>
-                </div>
+type DeliveryProps = {
+  form: RefillFormState;
+  setForm: React.Dispatch<React.SetStateAction<RefillFormState>>;
+};
 
-                <div className="input-control">
-                    <label>Delivery Method *</label>
-                    <div className="options">
-                        <label><input type="radio" name="d_method" value="SAME"/> Same Day</label>
-                        <label><input type="radio" name="d_method" value="STANDARD"/> Standard</label>
-                        <div className="error"></div>
-                    </div>
-                </div>
+export function Delivery({ form, setForm }: DeliveryProps): ReactElement {
+  return (
+    <div className="section delivery-section">
+      <div className="input-control">
+        <label>Delivery Address *</label>
+        <textarea
+          value={form.deliveryAddress}
+          onChange={(e) =>
+            setForm({ ...form, deliveryAddress: e.target.value })
+          }
+        />
+        <div className="error"></div>
+      </div>
 
-                <div className="input-control">
-                    <label>Preffered Delivery date</label>
-                    <input type="date" id="preffereddate"/>
-                </div>
-                
-                <div className="input-control">
-                    <label>Any Special Instructions</label>
-                    <textarea id="instructions"></textarea>
-                </div>
-        </div>
-    )
+      <div className="input-control">
+        <label>Delivery Method *</label>
+        {["SAME DAY", "STANDARD"].map((m) => (
+          <label key={m}>
+            <input
+              type="radio"
+              name="delivery"
+              value={m}
+              checked={form.deliveryMethod === m}
+              onChange={() =>
+                setForm({ ...form, deliveryMethod: m })
+              }
+            />
+            {m}
+          </label>
+        ))}
+        <div className="error"></div>
+      </div>
+
+      <div className="input-control">
+        <label>Preferred Delivery Date</label>
+        <input
+          type="date"
+          min={new Date().toISOString().split("T")[0]}
+          value={form.preferredDeliveryDate}
+          onChange={(e) =>
+            setForm({ ...form, preferredDeliveryDate: e.target.value })
+          }
+        />
+      </div>
+
+      <div className="input-control">
+        <label>Special Instructions</label>
+        <textarea
+          value={form.specialInstrucions}
+          onChange={(e) =>
+            setForm({ ...form, specialInstrucions: e.target.value })
+          }
+        />
+      </div>
+    </div>
+  );
 }
-export default Delivery
+
+export default Delivery;
