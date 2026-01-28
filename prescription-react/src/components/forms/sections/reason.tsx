@@ -1,5 +1,8 @@
-import React, { type ReactElement } from "react";
-import type { RefillFormState } from "../../../types/refill-formstate";
+import React, { type ReactElement, useState } from "react";
+import { validateOtherReason,validateReason } from "../../../validations/reason";
+import type { RefillFormState } from "../../../types";
+
+
 
 type ReasonProps = {
   form: RefillFormState;
@@ -7,6 +10,13 @@ type ReasonProps = {
 };
 
 export function Reason({ form, setForm }: ReasonProps): ReactElement {
+  const [reasonTouched, setReasonTouched] = useState(false);
+  const [otherTouched, setOtherTouched] = useState(false);
+
+  if(form.reason){
+  const reasonValidation = validateReason(form.reason);
+  const otherValidation = validateOtherReason( form.reason, form.otherReason);}
+
   return (
     <div className="section approval-reason">
       <label>Reason for Refill *</label>
@@ -19,17 +29,22 @@ export function Reason({ form, setForm }: ReasonProps): ReactElement {
               name="reason"
               value={r}
               checked={form.reason === r}
-              onChange={() =>
+              onChange={() => {
+                setReasonTouched(true);
                 setForm({
                   ...form,
                   reason: r,
                   otherReason: r === "OTHER" ? form.otherReason : "",
-                })
-              }
+                });
+              }}
             />
             {r}
           </label>
         ))}
+
+        {reasonTouched && !validateReason(form.reason??'').valid && (
+          <div className="error">{validateReason(form.reason??'').message}</div>
+        )}
 
         {form.reason === "OTHER" && (
           <div className="others-box">
@@ -37,11 +52,16 @@ export function Reason({ form, setForm }: ReasonProps): ReactElement {
             <input
               type="text"
               value={form.otherReason}
-              onChange={(e) =>
-                setForm({ ...form, otherReason: e.target.value })
-              }
+              onChange={(e) => {
+                setOtherTouched(true);
+                setForm({ ...form, otherReason: e.target.value });
+              }}
+              onBlur={() => setOtherTouched(true)}
             />
-            <div className="error"></div>
+
+            {otherTouched && !validateOtherReason(form.reason,form.otherReason).valid && (
+              <div className="error">{validateOtherReason(form.reason,form.otherReason).message}</div>
+            )}
           </div>
         )}
       </div>
