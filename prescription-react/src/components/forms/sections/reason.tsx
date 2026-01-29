@@ -30,7 +30,7 @@ export function Reason({
     <div className="section approval-reason">
       <label>Reason for Refill *</label>
 
-      <div className="input-control">
+      <div className="input-control ">
         {["RUNNING OUT", "LOST", "TRAVELLING", "OTHER"].map((r) => (
           <label key={r}>
             <input
@@ -52,7 +52,6 @@ export function Reason({
           </label>
         ))}
 
-        {/* LIVE OR SUBMIT ERROR */}
         {(reasonTouched || errors.reason) &&
           !reasonValidation.valid && (
             <div className="error">
@@ -62,7 +61,14 @@ export function Reason({
       </div>
 
       {form.reason === "OTHER" && (
-        <div className="input-control others-box">
+        <div
+          className={`input-control others-box ${
+            (otherTouched || errors.otherReason) &&
+            !otherValidation.valid
+              ? "has-error"
+              : ""
+          }`}
+        >
           <label>Please Specify</label>
           <input
             type="text"
@@ -77,7 +83,6 @@ export function Reason({
             onBlur={() => setOtherTouched(true)}
           />
 
-          {/* LIVE OR SUBMIT ERROR */}
           {(otherTouched || errors.otherReason) &&
             !otherValidation.valid && (
               <div className="error">

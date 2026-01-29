@@ -26,8 +26,16 @@ export function Confirm({
 
   return (
     <div className="section confirmations">
-      {/* ---------- Insurance ---------- */}
-      <div className="input-control">
+
+
+      <div
+        className={`input-control ${
+          (insuranceTouched || errors.insuranceNumber) &&
+          !insuranceValidation.valid
+            ? "has-error"
+            : ""
+        }`}
+      >
         <label>
           <input
             type="checkbox"
@@ -73,7 +81,7 @@ export function Confirm({
         )}
       </div>
 
-      {/* ---------- Consultation ---------- */}
+     
       <div className="input-control">
         <label>
           <input
@@ -90,8 +98,15 @@ export function Confirm({
         </label>
       </div>
 
-      {/* ---------- Confirm Identity ---------- */}
-      <div className="input-control">
+   
+      <div
+        className={`input-control ${
+          (confirmTouched || errors.confirmation) &&
+          !identityValidation.valid
+            ? "has-error"
+            : ""
+        }`}
+      >
         <label>
           <input
             type="checkbox"
@@ -108,10 +123,10 @@ export function Confirm({
           Terms and Conditions
         </label>
 
-        {(confirmTouched || errors.confirmation)&&
+        {(confirmTouched || errors.confirmation) &&
           !identityValidation.valid && (
             <div className="error">
-              {errors.confirmation??
+              {errors.confirmation ??
                 identityValidation.message}
             </div>
           )}
@@ -119,5 +134,3 @@ export function Confirm({
     </div>
   );
 }
-
-export default Confirm;

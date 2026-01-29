@@ -9,6 +9,7 @@ import type { RefillRecord } from "../../types/refill-record";
 import type { FormErrors } from "../../types";
 import { initialFormState } from "../../states/initial-formstate";
 
+
 interface FormProps {
   setRecords: React.Dispatch<React.SetStateAction<RefillRecord[]>>;
   records: RefillRecord[];
@@ -25,6 +26,7 @@ export function Form({
 
   const [form, setForm] = useState<RefillFormState>(initialFormState);
   const [errors, setErrors] = useState<FormErrors>({});
+
 
   useEffect(() => {
     if (editingIndex !== null) {
@@ -66,6 +68,7 @@ export function Form({
     const payload = buildPayload(form);
     saveRecord(payload);
     setForm(initialFormState);
+
   }
 
   return (
@@ -109,6 +112,7 @@ export function Form({
           {editingIndex === null ? "Submit" : "Update"}
         </button>
       </form>
+  
     </div>
   );
 }

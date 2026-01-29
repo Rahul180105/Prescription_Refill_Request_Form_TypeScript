@@ -29,7 +29,6 @@ export function Delivery({
 
   return (
     <div className="section delivery-section">
-      {/* ---------- Address ---------- */}
       <div className={`input-control ${(addressTouched &&!addressValidation.valid) || errors.deliveryaddress ?'has-error':''}`}>
         <label>Delivery Address *</label>
         <textarea
@@ -53,7 +52,7 @@ export function Delivery({
           )}
       </div>
 
-      {/* ---------- Delivery Method ---------- */}
+  
       <div className="input-control">
         <label>Delivery Method *</label>
 
@@ -86,7 +85,6 @@ export function Delivery({
           )}
       </div>
 
-      {/* ---------- Preferred Date ---------- */}
       <div className="input-control">
         <label>Preferred Delivery Date</label>
         <input
@@ -102,7 +100,6 @@ export function Delivery({
         />
       </div>
 
-      {/* ---------- Instructions ---------- */}
       <div className="input-control">
         <label>Special Instructions</label>
         <textarea

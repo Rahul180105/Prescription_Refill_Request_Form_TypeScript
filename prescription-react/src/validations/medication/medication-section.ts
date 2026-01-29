@@ -11,7 +11,7 @@ export function validateMedicationSection(
   if (!hasAtLeastOneValid) {
     return {
       valid: false,
-      message: "Enter quantity for at least one medication"
+      message: "Enter quantity(1-12) for at least one medication"
     };
   }
 

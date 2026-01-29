@@ -29,7 +29,7 @@ export function Patient({
 
   return (
     <div className="section patient-contact">
-      {/* ---------------- Patient ID ---------------- */}
+  
       <div className={`input-control ${(idTouched && !idValidation.valid) || errors.patientId?'has-error':''}`}>
         <label>Patient ID</label>
         <input
@@ -82,19 +82,18 @@ export function Patient({
         ) : null}
       </div>
 
-      {/* ---------------- Patient Name ---------------- */}
       <div className="input-control">
         <label>Patient Name</label>
         <input type="text" value={form.patientName} readOnly />
       </div>
 
-      {/* ---------------- DOB ---------------- */}
+
       <div className="input-control">
         <label>Date of Birth</label>
         <input type="date" value={form.dateOfBirth} readOnly />
       </div>
 
-      {/* ---------------- Phone ---------------- */}
+
       <div className={`input-control ${(phoneTouched && !phoneValidation.valid) || errors.phone?'has-error':''}`}>
         <label>Phone *</label>
         <input
@@ -119,7 +118,6 @@ export function Patient({
         ) : null}
       </div>
 
-      {/* ---------------- Email ---------------- */}
       <div className={`input-control ${(emailTouched && !emailValidation.valid) || errors.email?'has-error':''}`}>
         <label>Email *</label>
         <input
