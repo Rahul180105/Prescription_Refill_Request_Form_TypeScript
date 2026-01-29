@@ -7,7 +7,8 @@ export const patients:Patient[]=[
         dateOfBirth:'2005-01-18',
         lastApprovalDate:'2025-12-01',
         medications:[
-           { name:'paracetamol',dosage:'1/day'}
+           { name:'paracetamol',dosage:'1/day'},
+           { name:'dolo',dosage:'2/day'}
         ]
     }
 ]

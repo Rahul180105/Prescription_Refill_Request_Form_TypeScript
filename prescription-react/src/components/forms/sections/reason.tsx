@@ -1,21 +1,30 @@
 import React, { type ReactElement, useState } from "react";
-import { validateOtherReason,validateReason } from "../../../validations/reason";
-import type { RefillFormState } from "../../../types";
-
+import {
+  validateReason,
+  validateOtherReason
+} from "../../../validations/reason";
+import type { RefillFormState,FormErrors } from "../../../types";
 
 
 type ReasonProps = {
   form: RefillFormState;
   setForm: React.Dispatch<React.SetStateAction<RefillFormState>>;
+  errors: Partial<FormErrors>;
 };
 
-export function Reason({ form, setForm }: ReasonProps): ReactElement {
+export function Reason({
+  form,
+  setForm,
+  errors
+}: ReasonProps): ReactElement {
   const [reasonTouched, setReasonTouched] = useState(false);
   const [otherTouched, setOtherTouched] = useState(false);
 
-  if(form.reason){
-  const reasonValidation = validateReason(form.reason);
-  const otherValidation = validateOtherReason( form.reason, form.otherReason);}
+  const reasonValidation = validateReason(form.reason ?? "");
+  const otherValidation = validateOtherReason(
+    form.reason??'' ,
+    form.otherReason
+  );
 
   return (
     <div className="section approval-reason">
@@ -31,40 +40,52 @@ export function Reason({ form, setForm }: ReasonProps): ReactElement {
               checked={form.reason === r}
               onChange={() => {
                 setReasonTouched(true);
-                setForm({
-                  ...form,
+                setForm(prev => ({
+                  ...prev,
                   reason: r,
-                  otherReason: r === "OTHER" ? form.otherReason : "",
-                });
+                  otherReason: r === "OTHER" ? prev.otherReason : ""
+                }));
               }}
+              onBlur={() => setReasonTouched(true)}
             />
             {r}
           </label>
         ))}
 
-        {reasonTouched && !validateReason(form.reason??'').valid && (
-          <div className="error">{validateReason(form.reason??'').message}</div>
-        )}
-
-        {form.reason === "OTHER" && (
-          <div className="others-box">
-            <label>Please Specify</label>
-            <input
-              type="text"
-              value={form.otherReason}
-              onChange={(e) => {
-                setOtherTouched(true);
-                setForm({ ...form, otherReason: e.target.value });
-              }}
-              onBlur={() => setOtherTouched(true)}
-            />
-
-            {otherTouched && !validateOtherReason(form.reason,form.otherReason).valid && (
-              <div className="error">{validateOtherReason(form.reason,form.otherReason).message}</div>
-            )}
-          </div>
-        )}
+        {/* LIVE OR SUBMIT ERROR */}
+        {(reasonTouched || errors.reason) &&
+          !reasonValidation.valid && (
+            <div className="error">
+              {errors.reason ?? reasonValidation.message}
+            </div>
+          )}
       </div>
+
+      {form.reason === "OTHER" && (
+        <div className="input-control others-box">
+          <label>Please Specify</label>
+          <input
+            type="text"
+            value={form.otherReason}
+            onChange={(e) => {
+              setOtherTouched(true);
+              setForm(prev => ({
+                ...prev,
+                otherReason: e.target.value
+              }));
+            }}
+            onBlur={() => setOtherTouched(true)}
+          />
+
+          {/* LIVE OR SUBMIT ERROR */}
+          {(otherTouched || errors.otherReason) &&
+            !otherValidation.valid && (
+              <div className="error">
+                {errors.otherReason ?? otherValidation.message}
+              </div>
+            )}
+        </div>
+      )}
 
       <div className="input-control">
         <label>Doctor's Last Approval Date</label>

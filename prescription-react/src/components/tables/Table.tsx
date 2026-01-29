@@ -1,4 +1,4 @@
-import React, { type ReactElement } from "react";
+import React, { type ReactElement, useState } from "react";
 import type { RefillRecord } from "../../types/refill-record";
 import { saveRecords } from "../../storage";
 
@@ -14,27 +14,36 @@ export function Table({
   setEditingIndex
 }: TableProps): ReactElement {
 
-  function handleDelete(index: number) {
-    const ok = window.confirm("Are you sure you want to delete this record?");
-    if (!ok) return;
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+
+  function confirmDelete(index: number) {
+    setDeleteIndex(index);
+    setShowDeletePopup(true);
+  }
+
+  function handleDeleteConfirmed() {
+    if (deleteIndex === null) return;
 
     setRecords(prev => {
-      const updated = prev.filter((_, i) => i !== index);
+      const updated = prev.filter((_, i) => i !== deleteIndex);
       saveRecords(updated);
       return updated;
     });
+
+    setShowDeletePopup(false);
+    setDeleteIndex(null);
   }
 
   return (
     <div id="tableContainer" className="table-panel">
       <div id="tableContent">
-
         <h2>Saved Records</h2>
 
         {records.length === 0 ? (
           <p>No records saved</p>
         ) : (
-          <table className="records-table">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>Patient ID</th>
@@ -63,8 +72,7 @@ export function Table({
                       ? "—"
                       : record.medications
                           .map(
-                            m =>
-                              `${m.name} (${m.dosage}) × ${m.quantity}`
+                            m => `${m.name} (${m.dosage}) × ${m.quantity}`
                           )
                           .join(", ")}
                   </td>
@@ -81,15 +89,24 @@ export function Table({
 
                   <td>
                     {record.hasInsurance
-                      ? `(${record.insuranceNumber})`
-                      : 'No'}
+                      ? record.insuranceNumber
+                        ? `(${record.insuranceNumber})`
+                        : "Yes"
+                      : "No"}
                   </td>
 
                   <td>
-                    <button className='edit-btn' onClick={() => setEditingIndex(index)}>
+                    <button
+                      className="edit-btn"
+                      onClick={() => setEditingIndex(index)}
+                    >
                       Edit
                     </button>
-                    <button className='delete-btn' onClick={() => handleDelete(index)}>
+
+                    <button
+                      className="delete-btn"
+                      onClick={() => confirmDelete(index)}
+                    >
                       Delete
                     </button>
                   </td>
@@ -98,8 +115,31 @@ export function Table({
             </tbody>
           </table>
         )}
-
       </div>
+      
+      {showDeletePopup && (
+        <div className="popup-overlay">
+          <div className="popup-box">
+            <h2>Confirm Delete</h2>
+            <p>Are you sure you want to delete this record?</p>
+
+            <div className='popup-actions'>
+              <button className="btn secondary" onClick={handleDeleteConfirmed}>
+                Delete
+              </button>
+              <button
+                className="btn"
+                onClick={() => {
+                  setShowDeletePopup(false);
+                  setDeleteIndex(null);
+                }} >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -5,7 +5,7 @@
     --text-color: #07263b;
     --muted: #6b7280;
     --muted-2: #9aa6b2;
-    --accent: #0b78ff; /* primary accent for links/focus */
+    --accent: #0b78ff; 
     --form-bg: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
     --form-border: rgba(15,23,42,0.06);
     --form-shadow: 0 14px 40px rgba(14,30,49,0.06);
@@ -75,6 +75,9 @@ body{
     display: flex;
     column-gap: 10px;
     transition: background .35s ease, color .35s ease;
+}
+h2{
+    text-align: center;
 }
 
 form{
@@ -337,6 +340,7 @@ button[type="submit"]:hover{ filter: brightness(.98) saturate(1.08); transform: 
     display:flex;
     min-height:100vh;
     background: var(--page-bg);
+    padding-top:20px;
 }
 .form-panel{
     flex:1;
@@ -349,9 +353,10 @@ button[type="submit"]:hover{ filter: brightness(.98) saturate(1.08); transform: 
 }
 .table-panel{
     padding: 16px;
+    padding-top: 0px;
     overflow-x: auto;
     height: 100%;
-    background: var(--table-bg);
+    background: transparent/*var(--table-bg)*/;
 }
 #tableContent{
     border-collapse: collapse;
@@ -472,7 +477,8 @@ button.delete-btn:active{
 .popup-overlay{
     position: fixed;
     inset: 0;
-    background: rgba(15,23,42,0.45);
+    background: white;
+    border:1px solid black;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -480,5 +486,11 @@ button.delete-btn:active{
     border-radius: 20px;
     margin: 100px;
     display: flex;
+    width: 500px;
+    height:200px;
 
+}
+input.qty-error{
+    border-color:#ff7b88;
+    box-sizing: 0 0 0 4px rgba(255,123,136,0,0.06);
 }

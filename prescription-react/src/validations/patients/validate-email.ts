@@ -2,6 +2,7 @@ export function validateEmail(email:string){
     if(!email){
         return {valid:false,message:'Email is required'};
     }
+
     if(email.includes(' ')){
         return {valid:false,message:'Email cannot have spaces'};
     }
@@ -13,12 +14,9 @@ export function validateEmail(email:string){
     if(!local || local.startsWith('.') || local.endsWith('.') || local.includes('..')){
         return {valid:false,message:'Invalid username'};
     }
-    if(!domain || domain.startsWith('.') || domain.endsWith('.') || domain.includes('..')||!domain.includes('..')){
+    if(!domain || domain.startsWith('.') || domain.endsWith('.') || domain.includes('..') ||!domain.includes('.')){
         return {valid:false,message:'Invalid domain'};
     }
-    const dom=domain.split('.').pop();
-    if(!dom||dom.length<2){
-        return{valid:false,message:'Invalid email domain'};
-    }
+    
     return {valid:true};
 }

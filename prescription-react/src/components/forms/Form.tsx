@@ -1,18 +1,13 @@
 import React, { useEffect, useState, type ReactElement } from "react";
-import Patient from "./sections/patient";
-import Medication from "./sections/medication";
-import Reason from "./sections/reason";
-import Delivery from "./sections/delivery";
-import Confirm from "./sections/confirm";
+import { Patient,Delivery,Medication,Reason,Confirm} from './sections';
 import { buildPayload } from "../../helpers/build-payload";
 import { recordToForm } from "../../record-to-form";
-import type { RefillFormState } from "../../types/refill-formstate";
-import { initialFormState } from "../../states/initial-formstate";
-import type { RefillRecord } from "../../types/refill-record";
+import { validateForm } from "../../validations/validate-form";
 import { saveRecords } from "../../storage";
+import type { RefillFormState } from "../../types/refill-formstate";
+import type { RefillRecord } from "../../types/refill-record";
 import type { FormErrors } from "../../types";
-
-
+import { initialFormState } from "../../states/initial-formstate";
 
 interface FormProps {
   setRecords: React.Dispatch<React.SetStateAction<RefillRecord[]>>;
@@ -29,66 +24,92 @@ export function Form({
 }: FormProps): ReactElement {
 
   const [form, setForm] = useState<RefillFormState>(initialFormState);
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  /* ---------- Load record into form when editing ---------- */
   useEffect(() => {
     if (editingIndex !== null) {
       setForm(recordToForm(records[editingIndex]));
+      setErrors({});
     }
   }, [editingIndex, records]);
 
-  /* ---------- Save / Update record ---------- */
+
   function saveRecord(payload: RefillRecord) {
     setRecords(prev => {
-      let updated: RefillRecord[];
-
-      if (editingIndex === null) {
-        // CREATE
-        updated = [...prev, payload];
-      } else {
-        // UPDATE
-        updated = prev.map((rec, i) =>
-          i === editingIndex ? payload : rec
-        );
-      }
+      const updated =
+        editingIndex === null
+          ? [...prev, payload]
+          : prev.map((rec, i) =>
+              i === editingIndex ? payload : rec
+            );
 
       saveRecords(updated);
       return updated;
     });
 
-    // exit edit mode
     setEditingIndex(null);
   }
 
-  /* ---------- Submit handler ---------- */
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    console.log('submit');
+    const result = validateForm(form);
+     console.log(result.valid)
+    if (!result.valid) {
+      setErrors(result.errors);
+      return;
+    }
+   
 
+    setErrors({});
     const payload = buildPayload(form);
     saveRecord(payload);
-
     setForm(initialFormState);
   }
 
   return (
-    
-      <div className="form" id="formContainer">
-        <form id="refill" onSubmit={handleSubmit}>
-          <label>
-            <strong>REFILL FORM</strong>
-          </label>
+    <div className="form" id="formContainer">
+      <form id="refill" onSubmit={handleSubmit}>
+        <label>
+          <strong>REFILL FORM</strong>
+        </label>
 
-          <Patient form={form} setForm={setForm} />
-          <Medication form={form} setForm={setForm} />
-          <Reason form={form} setForm={setForm} />
-          <Delivery form={form} setForm={setForm} />
-          <Confirm form={form} setForm={setForm} />
+        <Patient
+          form={form}
+          setForm={setForm}
+          errors={errors}
+        />
 
-          <button type="submit">
-            {editingIndex === null ? "Submit" : "Update"}
-          </button>
-        </form>
-      </div>
+        <Medication
+          form={form}
+          setForm={setForm}
+          errors={errors}
+        />
+
+        <Reason
+          form={form}
+          setForm={setForm}
+          errors={errors}
+        />
+
+        <Delivery
+          form={form}
+          setForm={setForm}
+          errors={errors}
+        />
+
+        <Confirm
+          form={form}
+          setForm={setForm}
+          errors={errors}
+        />
+
+        <button type="submit">
+          {editingIndex === null ? "Submit" : "Update"}
+        </button>
+      </form>
+    </div>
   );
 }
 

@@ -1,130 +1,146 @@
-import React, { type ReactElement } from "react";
+import React, { useState, type ReactElement } from "react";
 import type { RefillFormState } from "../../../types/refill-formstate";
+import type { FormErrors } from "../../../types";
 import { findPatientId } from "../../../helpers/patient-service";
-import { validatePatientId,validateEmail,validatePhone } from "../../../validations/patients";
-import { useState } from "react";
+import {
+  validatePatientId,
+  validatePhone,
+  validateEmail
+} from "../../../validations/patients";
 
 type PatientProps = {
   form: RefillFormState;
   setForm: React.Dispatch<React.SetStateAction<RefillFormState>>;
+  errors: Partial<FormErrors>;
 };
 
-export function Patient({ form, setForm }: PatientProps): ReactElement {
-  const [idtouched,idsetTouched]=useState(false);
-  const [phonetouched,phonesetTouched]=useState(false);
-  const [emailtouched,emailsetTouched]=useState(false);
+export function Patient({
+  form,
+  setForm,
+  errors
+}: PatientProps): ReactElement {
+  const [idTouched, setIdTouched] = useState(false);
+  const [phoneTouched, setPhoneTouched] = useState(false);
+  const [emailTouched, setEmailTouched] = useState(false);
+
+  const idValidation = validatePatientId(form.patientId);
+  const phoneValidation = validatePhone(form.phone);
+  const emailValidation = validateEmail(form.email);
+
   return (
     <div className="section patient-contact">
-      <div className="input-control">
+      {/* ---------------- Patient ID ---------------- */}
+      <div className={`input-control ${(idTouched && !idValidation.valid) || errors.patientId?'has-error':''}`}>
         <label>Patient ID</label>
         <input
-  type="text"
-  value={form.patientId}
-  onChange={(e) => {
-    idsetTouched(true)
-    const value = e.target.value;
+          type="text"
+          value={form.patientId}
+          onChange={(e) => {
+            const value = e.target.value;
+            setIdTouched(true);
 
-    setForm(prev => ({
-      ...prev,
-      patientId: value
-    }));
+            setForm((prev) => ({
+              ...prev,
+              patientId: value
+            }));
 
-    const result = validatePatientId(value);
+            const result = validatePatientId(value);
 
-    if (!result.valid) {
-      setForm(prev => ({
-        ...prev,
-        patientName: "",
-        dateOfBirth: "",
-        lastApprovalDate: "",
-        medications: []
-      }));
-    } else {
-      
-      const patient = findPatientId(value);
+            if (!result.valid) {
+              setForm((prev) => ({
+                ...prev,
+                patientName: "",
+                dateOfBirth: "",
+                lastApprovalDate: "",
+                medications: []
+              }));
+              return;
+            }
 
-      if (patient) {
-        setForm(prev => ({
-          ...prev,
-          patientName: patient.name,
-          dateOfBirth: patient.dateOfBirth,
-          lastApprovalDate: patient.lastApprovalDate,
-          medications: patient.medications.map(m => ({
-            name: m.name,
-            dosage: m.dosage,
-            quantity: 0
-          }))
-        }));
-      }
-    }
+            const patient = findPatientId(value);
+            if (patient) {
+              setForm((prev) => ({
+                ...prev,
+                patientName: patient.name,
+                dateOfBirth: patient.dateOfBirth,
+                lastApprovalDate: patient.lastApprovalDate,
+                medications: patient.medications.map((m) => ({
+                  name: m.name,
+                  dosage: m.dosage,
+                  quantity: 0
+                }))
+              }));
+            }
+          }}
+          onBlur={() => setIdTouched(true)}
+        />
 
-  }}
-  onBlur={()=>{idsetTouched(true);}}
-  
-/>    {idtouched && !validatePatientId(form.patientId).valid&&(
-        <div className="error">{validatePatientId(form.patientId).message}</div>
-)}
+        {(idTouched && !idValidation.valid) || errors.patientId ? (
+          <div className="error">
+            {idTouched ? idValidation.message : errors.patientId}
+          </div>
+        ) : null}
       </div>
 
-
+      {/* ---------------- Patient Name ---------------- */}
       <div className="input-control">
         <label>Patient Name</label>
         <input type="text" value={form.patientName} readOnly />
-        <div className="error"></div>
       </div>
 
+      {/* ---------------- DOB ---------------- */}
       <div className="input-control">
         <label>Date of Birth</label>
         <input type="date" value={form.dateOfBirth} readOnly />
-        <div className="error"></div>
       </div>
 
-      <div className="input-control">
+      {/* ---------------- Phone ---------------- */}
+      <div className={`input-control ${(phoneTouched && !phoneValidation.valid) || errors.phone?'has-error':''}`}>
         <label>Phone *</label>
         <input
-  type="tel"
-  value={form.phone}
-  maxLength={10}
-  onChange={(e) => {
-    phonesetTouched(true);
+          type="tel"
+          maxLength={10}
+          value={form.phone}
+          onChange={(e) => {
+            setPhoneTouched(true);
+            const digitsOnly = e.target.value.replace(/\D/g, "");
+            setForm((prev) => ({
+              ...prev,
+              phone: digitsOnly
+            }));
+          }}
+          onBlur={() => setPhoneTouched(true)}
+        />
 
-    const digitsOnly = e.target.value.replace(/\D/g, "");
-
-    setForm(prev => ({
-      ...prev,
-      phone: digitsOnly
-    }));
-  }}
-  onBlur={() => phonesetTouched(true)}
-/>
-        {phonetouched && !validatePhone(form.phone).valid &&
-        (<div className="error">{validatePhone(form.phone).message}</div>
-)}
+        {(phoneTouched && !phoneValidation.valid) || errors.phone ? (
+          <div className="error">
+            {phoneTouched ? phoneValidation.message : errors.phone}
+          </div>
+        ) : null}
       </div>
 
-
-
-
-      <div className="input-control">
+      {/* ---------------- Email ---------------- */}
+      <div className={`input-control ${(emailTouched && !emailValidation.valid) || errors.email?'has-error':''}`}>
         <label>Email *</label>
         <input
-  type="email"
-  value={form.email}
-  onChange={(e) => {
-    emailsetTouched(true);
+          type="email"
+          value={form.email}
+          onChange={(e) => {
+            setEmailTouched(true);
+            setForm((prev) => ({
+              ...prev,
+              email: e.target.value
+            }));
+          }}
+          onBlur={() => setEmailTouched(true)}
+        />
 
-    setForm(prev => ({
-      ...prev,
-      email: e.target.value
-    }));
-  }}
-  onBlur={() => emailsetTouched(true)}
-/>
-       {emailtouched&&!(validateEmail(form.email).valid)&&(
-        <div className="error">{validateEmail(form.email).message}</div>
-        )}
+        {(emailTouched && !emailValidation.valid) || errors.email ? (
+          <div className="error">
+            {emailTouched ? emailValidation.message : errors.email}
+          </div>
+        ) : null}
       </div>
-
     </div>
   );
 }

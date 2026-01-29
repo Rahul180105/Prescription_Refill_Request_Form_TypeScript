@@ -1,23 +1,47 @@
-import React, { type ReactElement } from "react";
+import React, { useState, type ReactElement } from "react";
 import type { RefillFormState } from "../../../types/refill-formstate";
+import { validateInsurance } from "../../../validations/confirm/validate-insurance";
+import { validateIdentity } from "../../../validations/confirm/validate-identity";
+import type { FormErrors } from "../../../types";
 
 type ConfirmProps = {
   form: RefillFormState;
   setForm: React.Dispatch<React.SetStateAction<RefillFormState>>;
+  errors: Partial<FormErrors>;
 };
 
-export function Confirm({ form, setForm }: ConfirmProps): ReactElement {
+export function Confirm({
+  form,
+  setForm,
+  errors
+}: ConfirmProps): ReactElement {
+  const [confirmTouched, setConfirmTouched] = useState(false);
+  const [insuranceTouched, setInsuranceTouched] = useState(false);
+
+  const insuranceValidation = validateInsurance(
+    form.hasInsurance,
+    form.insuranceNumber
+  );
+  const identityValidation = validateIdentity(form.confirmIdentity);
+
   return (
     <div className="section confirmations">
-
+      {/* ---------- Insurance ---------- */}
       <div className="input-control">
         <label>
           <input
             type="checkbox"
             checked={form.hasInsurance}
-            onChange={(e) =>
-              setForm({ ...form, hasInsurance: e.target.checked })
-            }
+            onChange={(e) => {
+              setInsuranceTouched(true);
+              setForm(prev => ({
+                ...prev,
+                hasInsurance: e.target.checked,
+                insuranceNumber: e.target.checked
+                  ? prev.insuranceNumber
+                  : ""
+              }));
+            }}
           />
           Do you have Insurance
         </label>
@@ -28,42 +52,70 @@ export function Confirm({ form, setForm }: ConfirmProps): ReactElement {
             <input
               type="text"
               value={form.insuranceNumber}
-              onChange={(e) =>
-                setForm({ ...form, insuranceNumber: e.target.value })
-              }
+              onChange={(e) => {
+                setInsuranceTouched(true);
+                setForm(prev => ({
+                  ...prev,
+                  insuranceNumber: e.target.value
+                }));
+              }}
+              onBlur={() => setInsuranceTouched(true)}
             />
-            <div className="error"></div>
+
+            {(insuranceTouched || errors.insuranceNumber) &&
+              !insuranceValidation.valid && (
+                <div className="error">
+                  {errors.insuranceNumber ??
+                    insuranceValidation.message}
+                </div>
+              )}
           </div>
         )}
       </div>
 
+      {/* ---------- Consultation ---------- */}
       <div className="input-control">
         <label>
           <input
             type="checkbox"
             checked={form.needsConsulatation}
             onChange={(e) =>
-              setForm({ ...form, needsConsulatation: e.target.checked })
+              setForm(prev => ({
+                ...prev,
+                needsConsulatation: e.target.checked
+              }))
             }
           />
           Do you need Consultation
         </label>
       </div>
 
+      {/* ---------- Confirm Identity ---------- */}
       <div className="input-control">
         <label>
           <input
             type="checkbox"
             checked={form.confirmIdentity}
-            onChange={(e) =>
-              setForm({ ...form, confirmIdentity: e.target.checked })
-            }
+            onChange={(e) => {
+              setConfirmTouched(true);
+              setForm(prev => ({
+                ...prev,
+                confirmIdentity: e.target.checked
+              }));
+            }}
+            onBlur={() => setConfirmTouched(true)}
           />
           Terms and Conditions
         </label>
-        <div className="error"></div>
-      </div>
 
+        {(confirmTouched || errors.confirmation)&&
+          !identityValidation.valid && (
+            <div className="error">
+              {errors.confirmation??
+                identityValidation.message}
+            </div>
+          )}
+      </div>
     </div>
   );
 }
