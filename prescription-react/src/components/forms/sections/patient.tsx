@@ -1,11 +1,11 @@
-import React, { useState, type ReactElement } from "react";
+import { useState, type ReactElement } from "react";
 import type { RefillFormState } from "../../../types/refill-formstate";
 import type { FormErrors } from "../../../types";
 import { findPatientId } from "../../../helpers/patient-service";
 import {
   validatePatientId,
   validatePhone,
-  validateEmail
+  validateEmail,
 } from "../../../validations/patients";
 
 type PatientProps = {
@@ -17,7 +17,7 @@ type PatientProps = {
 export function Patient({
   form,
   setForm,
-  errors
+  errors,
 }: PatientProps): ReactElement {
   const [idTouched, setIdTouched] = useState(false);
   const [phoneTouched, setPhoneTouched] = useState(false);
@@ -27,117 +27,194 @@ export function Patient({
   const phoneValidation = validatePhone(form.phone);
   const emailValidation = validateEmail(form.email);
 
+  const showIdError =
+    (idTouched || errors.patientId) && !idValidation.valid;
+
+  const showPhoneError =
+    (phoneTouched || errors.phone) && !phoneValidation.valid;
+
+  const showEmailError =
+    (emailTouched || errors.email) && !emailValidation.valid;
+
   return (
-    <div className="section patient-contact">
-  
-      <div className={`input-control ${(idTouched && !idValidation.valid) || errors.patientId?'has-error':''}`}>
-        <label>Patient ID</label>
+    <div className="mt-6 space-y-6">
+
+      <div>
+        <label className="mb-1 block text-sm font-medium text-slate-70 dark:text-slate-300">
+          Patient ID *
+        </label>
+
         <input
           type="text"
           value={form.patientId}
-          onChange={(e) => {
+          onChange={e => {
             const value = e.target.value;
             setIdTouched(true);
 
-            setForm((prev) => ({
+            setForm(prev => ({
               ...prev,
-              patientId: value
+              patientId: value,
             }));
 
             const result = validatePatientId(value);
-
             if (!result.valid) {
-              setForm((prev) => ({
+              setForm(prev => ({
                 ...prev,
                 patientName: "",
                 dateOfBirth: "",
                 lastApprovalDate: "",
-                medications: []
+                medications: [],
               }));
               return;
             }
 
             const patient = findPatientId(value);
             if (patient) {
-              setForm((prev) => ({
+              setForm(prev => ({
                 ...prev,
                 patientName: patient.name,
                 dateOfBirth: patient.dateOfBirth,
                 lastApprovalDate: patient.lastApprovalDate,
-                medications: patient.medications.map((m) => ({
+                medications: patient.medications.map(m => ({
                   name: m.name,
                   dosage: m.dosage,
-                  quantity: 0
-                }))
+                  quantity: 0,
+                })),
               }));
             }
           }}
           onBlur={() => setIdTouched(true)}
+          className={`
+            w-full rounded-lg px-3 py-2 text-sm
+            bg-white text-slate-900
+            focus:outline-none
+            dark:bg-slate-800 dark:text-slate-100
+            ${
+              showIdError
+                ? "border-red-500 ring-2 ring-red-400/30"
+                : "border-slate-300 focus:ring-2 focus:ring-blue-500 dark:border-slate-700"
+            }
+          `}
         />
 
-        {(idTouched && !idValidation.valid) || errors.patientId ? (
-          <div className="error">
-            {idTouched ? idValidation.message : errors.patientId}
-          </div>
-        ) : null}
+        {showIdError && (
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+            {errors.patientId ?? idValidation.message}
+          </p>
+        )}
       </div>
 
-      <div className="input-control">
-        <label>Patient Name</label>
-        <input type="text" value={form.patientName} readOnly />
+      <div>
+        <label className="mb-1 block text-sm font-medium text-slate-70 dark:text-slate-400">
+          Patient Name
+        </label>
+
+        <input
+          type="text"
+          value={form.patientName}
+          readOnly
+          className="
+            w-full rounded-lg px-3 py-2 text-sm
+            bg-slate-100 text-slate-600
+            border border-slate-300
+            dark:bg-slate-900 dark:border-slate-700 dark:text-slate-400
+          "
+        />
       </div>
 
 
-      <div className="input-control">
-        <label>Date of Birth</label>
-        <input type="date" value={form.dateOfBirth} readOnly />
+      <div>
+        <label className="mb-1 block text-sm font-medium text-slate-70 dark:text-slate-400">
+          Date of Birth
+        </label>
+
+        <input
+          type="date"
+          value={form.dateOfBirth}
+          readOnly
+          className="
+            w-full rounded-lg px-3 py-2 text-sm
+            bg-slate-100 text-slate-600
+            border border-slate-300
+            dark:bg-slate-900 dark:border-slate-700 dark:text-slate-400
+          "
+        />
       </div>
 
+  
+      <div>
+        <label className="mb-1 block text-sm font-medium text-slate-70 dark:text-slate-300">
+          Phone *
+        </label>
 
-      <div className={`input-control ${(phoneTouched && !phoneValidation.valid) || errors.phone?'has-error':''}`}>
-        <label>Phone *</label>
         <input
           type="tel"
           maxLength={10}
           value={form.phone}
-          onChange={(e) => {
+          onChange={e => {
             setPhoneTouched(true);
             const digitsOnly = e.target.value.replace(/\D/g, "");
-            setForm((prev) => ({
+            setForm(prev => ({
               ...prev,
-              phone: digitsOnly
+              phone: digitsOnly,
             }));
           }}
           onBlur={() => setPhoneTouched(true)}
+          className={`
+            w-full rounded-lg px-3 py-2 text-sm
+            bg-white text-slate-900
+            focus:outline-none
+            dark:bg-slate-80 dark:text-slate-100
+            ${
+              showPhoneError
+                ? "border-red-500 ring-2 ring-red-400/30"
+                : "border-slate-300 focus:ring-2 focus:ring-blue-500 dark:border-slate-700"
+            }
+          `}
         />
 
-        {(phoneTouched && !phoneValidation.valid) || errors.phone ? (
-          <div className="error">
-            {phoneTouched ? phoneValidation.message : errors.phone}
-          </div>
-        ) : null}
+        {showPhoneError && (
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+            {errors.phone ?? phoneValidation.message}
+          </p>
+        )}
       </div>
 
-      <div className={`input-control ${(emailTouched && !emailValidation.valid) || errors.email?'has-error':''}`}>
-        <label>Email *</label>
+
+      <div>
+        <label className="mb-1 block text-sm font-medium text-slate-70 dark:text-slate-300">
+          Email *
+        </label>
+
         <input
           type="email"
           value={form.email}
-          onChange={(e) => {
+          onChange={e => {
             setEmailTouched(true);
-            setForm((prev) => ({
+            setForm(prev => ({
               ...prev,
-              email: e.target.value
+              email: e.target.value,
             }));
           }}
           onBlur={() => setEmailTouched(true)}
+          className={`
+            w-full rounded-lg px-3 py-2 text-sm
+            bg-white text-slate-900
+            focus:outline-none
+            dark:bg-slate-80 dark:text-slate-100
+            ${
+              showEmailError
+                ? "border-red-500 ring-2 ring-red-400/30"
+                : "border-slate-300 focus:ring-2 focus:ring-blue-500 dark:border-slate-700"
+            }
+          `}
         />
 
-        {(emailTouched && !emailValidation.valid) || errors.email ? (
-          <div className="error">
-            {emailTouched ? emailValidation.message : errors.email}
-          </div>
-        ) : null}
+        {showEmailError && (
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+            {errors.email ?? emailValidation.message}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
-import type { RefillFormState } from "./types/refill-formstate";
-import type { RefillRecord } from "./types/refill-record";
+import type { RefillFormState } from "../types/refill-formstate";
+import type { RefillRecord } from "../types/refill-record";
 
 export function recordToForm(record: RefillRecord): RefillFormState {
   return {

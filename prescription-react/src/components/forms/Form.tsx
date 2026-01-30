@@ -1,31 +1,33 @@
-import React, { useEffect, useState, type ReactElement } from "react";
-import { Patient,Delivery,Medication,Reason,Confirm} from './sections';
+import { useEffect, useState, type ReactElement } from "react";
+import { Patient, Delivery, Medication, Reason, Confirm } from "./sections";
 import { buildPayload } from "../../helpers/build-payload";
-import { recordToForm } from "../../record-to-form";
+import { recordToForm } from "../../helpers/record-to-form";
 import { validateForm } from "../../validations/validate-form";
-import { saveRecords } from "../../storage";
+import { saveRecords } from "../../data/storage";
 import type { RefillFormState } from "../../types/refill-formstate";
 import type { RefillRecord } from "../../types/refill-record";
 import type { FormErrors } from "../../types";
 import { initialFormState } from "../../states/initial-formstate";
-
+import { SuccessModal } from "../ui/sucess-modal";
 
 interface FormProps {
-  setRecords: React.Dispatch<React.SetStateAction<RefillRecord[]>>;
   records: RefillRecord[];
+  setRecords: React.Dispatch<React.SetStateAction<RefillRecord[]>>;
   editingIndex: number | null;
   setEditingIndex: React.Dispatch<React.SetStateAction<number | null>>;
+  onSuccess?: () => void; 
 }
 
 export function Form({
-  setRecords,
   records,
+  setRecords,
   editingIndex,
-  setEditingIndex
+  setEditingIndex,
+  onSuccess,
 }: FormProps): ReactElement {
-
   const [form, setForm] = useState<RefillFormState>(initialFormState);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [showSuccess, setShowSuccess] = useState(false);
 
 
   useEffect(() => {
@@ -35,15 +37,12 @@ export function Form({
     }
   }, [editingIndex, records]);
 
-
   function saveRecord(payload: RefillRecord) {
     setRecords(prev => {
       const updated =
         editingIndex === null
           ? [...prev, payload]
-          : prev.map((rec, i) =>
-              i === editingIndex ? payload : rec
-            );
+          : prev.map((r, i) => (i === editingIndex ? payload : r));
 
       saveRecords(updated);
       return updated;
@@ -55,65 +54,57 @@ export function Form({
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log('submit');
+
     const result = validateForm(form);
-     console.log(result.valid)
+
     if (!result.valid) {
       setErrors(result.errors);
       return;
     }
-   
 
     setErrors({});
     const payload = buildPayload(form);
+
     saveRecord(payload);
     setForm(initialFormState);
+    setShowSuccess(true);
+  }
 
+  function handleSuccessClose() {
+    setShowSuccess(false);
+    onSuccess?.(); 
   }
 
   return (
-    <div className="form" id="formContainer">
-      <form id="refill" onSubmit={handleSubmit}>
-        <label>
-          <strong>REFILL FORM</strong>
-        </label>
+    <>
+      <div className="form" id="formContainer">
+        <form onSubmit={handleSubmit}>
+          <h2 className="mb-4 text-lg font-semibold text-center">
+            {editingIndex === null ? "Refill Form" : "Update Refill"}
+          </h2>
 
-        <Patient
-          form={form}
-          setForm={setForm}
-          errors={errors}
-        />
+          <Patient form={form} setForm={setForm} errors={errors} />
+          <Medication form={form} setForm={setForm} errors={errors} />
+          <Reason form={form} setForm={setForm} errors={errors} />
+          <Delivery form={form} setForm={setForm} errors={errors} />
+          <Confirm form={form} setForm={setForm} errors={errors} />
 
-        <Medication
-          form={form}
-          setForm={setForm}
-          errors={errors}
-        />
+          <button
+            type="submit"
+            className="mt-4 w-full rounded-md bg-blue-600 py-2 font-semibold text-white hover:bg-blue-700"
+          >
+            {editingIndex === null ? "Submit" : "Update"}
+          </button>
+        </form>
+      </div>
 
-        <Reason
-          form={form}
-          setForm={setForm}
-          errors={errors}
-        />
-
-        <Delivery
-          form={form}
-          setForm={setForm}
-          errors={errors}
-        />
-
-        <Confirm
-          form={form}
-          setForm={setForm}
-          errors={errors}
-        />
-
-        <button type="submit">
-          {editingIndex === null ? "Submit" : "Update"}
-        </button>
-      </form>
-  
-    </div>
+      <SuccessModal
+        open={showSuccess}
+        onClose={handleSuccessClose}
+        title={editingIndex === null ? "Saved!" : "Updated!"}
+        message="Refill record saved successfully."
+      />
+    </>
   );
 }
 

@@ -1,4 +1,4 @@
-import type { RefillRecord } from "./types/refill-record";
+import type { RefillRecord } from "../types/refill-record";
 
 const KEY='refill-records';
 export function saveRecords(records:RefillRecord[]){

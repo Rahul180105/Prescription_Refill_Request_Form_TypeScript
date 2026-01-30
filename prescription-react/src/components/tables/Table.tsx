@@ -1,6 +1,6 @@
-import React, { type ReactElement, useState } from "react";
+import { useState } from "react";
 import type { RefillRecord } from "../../types/refill-record";
-import { saveRecords } from "../../storage";
+import { saveRecords } from "../../data/storage";
 
 interface TableProps {
   records: RefillRecord[];
@@ -8,12 +8,11 @@ interface TableProps {
   setEditingIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-export function Table({
+export default function Table({
   records,
   setRecords,
-  setEditingIndex
-}: TableProps): ReactElement {
-
+  setEditingIndex,
+}: TableProps) {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
@@ -36,112 +35,136 @@ export function Table({
   }
 
   return (
-    <div id="tableContainer" className="table-panel">
-      <div id="tableContent">
-        <h2>Saved Records</h2>
+    <div className="w-full rounded-2xl bg-white p-4 shadow
+                    dark:bg-slate-900">
+      <h2 className="mb-4 text-center text-lg font-semibold text-slate-800 dark:text-slate-100">
+        Saved Records
+      </h2>
 
-        {records.length === 0 ? (
-          <p>No records saved</p>
-        ) : (
-          <table className="data-table">
+      {records.length === 0 ? (
+        <p className="text-center text-slate-500">No records saved</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
             <thead>
-              <tr>
-                <th>Patient ID</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th>Medications</th>
-                <th>Reason</th>
-                <th>Delivery</th>
-                <th>Preferred Date</th>
-                <th>Insurance</th>
-                <th>Actions</th>
+              <tr className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                {[
+                  "Patient ID",
+                  "Name",
+                  "Phone",
+                  "Email",
+                  "Medications",
+                  "Reason",
+                  "Delivery",
+                  "Preferred Date",
+                  "Insurance",
+                  "Actions",
+                ].map(h => (
+                  <th key={h} className="border-b px-3 py-2 text-left">
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
 
-            <tbody>
-              {records.map((record, index) => (
-                <tr key={index}>
-                  <td>{record.patientId}</td>
-                  <td>{record.patientName}</td>
-                  <td>{record.phone}</td>
-                  <td>{record.email}</td>
+            <tbody className="text-slate-900 dark:text-slate-100">
+              {records.map((r, i) => (
+                <tr
+                  key={i}
+                  className={`border-b
+                    ${i % 2 === 0
+                      ? "bg-white dark:bg-slate-900"
+                      : "bg-blue-50 dark:bg-slate-800"
+                    }`}
+                >
+                  <td className="px-3 py-2">{r.patientId}</td>
+                  <td className="px-3 py-2">{r.patientName}</td>
+                  <td className="px-3 py-2">{r.phone}</td>
+                  <td className="px-3 py-2">{r.email}</td>
 
-                  <td>
-                    {record.medications.length === 0
+                  <td className="px-3 py-2">
+                    {r.medications.length === 0
                       ? "—"
-                      : record.medications
-                          .map(
-                            m => `${m.name} (${m.dosage}) × ${m.quantity}`
-                          )
+                      : r.medications
+                          .map(m => `${m.name} (${m.dosage}) × ${m.quantity}`)
                           .join(", ")}
                   </td>
 
-                  <td>
-                    {record.reason}
-                    {record.reason === "OTHER" && record.otherReason
-                      ? `: ${record.otherReason}`
-                      : ""}
+                  <td className="px-3 py-2">{r.reason}</td>
+                  <td className="px-3 py-2">{r.deliveryMethod}</td>
+                  <td className="px-3 py-2">
+                    {r.preferredDeliveryDate || "—"}
                   </td>
-
-                  <td>{record.deliveryMethod}</td>
-                  <td>{record.preferredDeliveryDate || "—"}</td>
-
-                  <td>
-                    {record.hasInsurance
-                      ? record.insuranceNumber
-                        ? `(${record.insuranceNumber})`
-                        : "Yes"
+                  <td className="px-3 py-2">
+                    {r.hasInsurance
+                      ? r.insuranceNumber || "Yes"
                       : "No"}
                   </td>
 
-                  <td>
+                  <td className="px-3 py-2 space-x-3">
                     <button
-                      className="edit-btn"
-                      onClick={() => setEditingIndex(index)}
-                    >
-                      Edit
+                      onClick={() => setEditingIndex(i)}
+                      className="font-semibold text-blue-600 hover:underline"
+                    >✏️
                     </button>
-
                     <button
-                      className="delete-btn"
-                      onClick={() => confirmDelete(index)}
-                    >
-                      Delete
+                      onClick={() => confirmDelete(i)}
+                      className="font-semibold text-red-600 hover:underline"
+                    >🗑️
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        )}
-      </div>
-      
-      {showDeletePopup && (
-        <div className="popup-overlay">
-          <div className="popup-box">
-            <h2>Confirm Delete</h2>
-            <p>Are you sure you want to delete this record?</p>
-
-            <div className='popup-actions'>
-              <button className="btn secondary" onClick={handleDeleteConfirmed}>
-                Delete
-              </button>
-              <button
-                className="btn"
-                onClick={() => {
-                  setShowDeletePopup(false);
-                  setDeleteIndex(null);
-                }} >
-                Cancel
-              </button>
-            </div>
-          </div>
         </div>
       )}
 
+  
+      {showDeletePopup && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center
+                  bg-black/50 dark:bg-black/70">
+    <div className="
+      w-80 rounded-xl p-5 shadow-xl
+      bg-white text-slate-800
+      dark:bg-slate-800 dark:text-slate-100
+      border border-slate-200 dark:border-slate-700
+    ">
+      <h3 className="mb-2 text-lg font-semibold">
+        Confirm Delete
+      </h3>
+
+      <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
+        Are you sure you want to delete this record?
+      </p>
+
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={() => setShowDeletePopup(false)}
+          className="
+            rounded-md px-3 py-1.5 text-sm font-medium
+            bg-slate-100 text-slate-700
+            hover:bg-slate-200
+            dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600
+          "
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={handleDeleteConfirmed}
+          className="
+            rounded-md px-3 py-1.5 text-sm font-semibold
+            bg-red-600 text-white
+            hover:bg-red-700
+          "
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }
-
-export default Table;
